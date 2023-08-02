@@ -98,7 +98,7 @@ export default function Home() {
         <header
           className={`w-full transition duration-150 sm:px-20 flex items-center justify-between xs:px-6 ${
             showHeader
-              ? "fixed top-0 left-0 shadow-md py-4 z-10 bg-white"
+              ? "fixed top-0 left-0 shadow-md py-4 z-20 bg-white"
               : "py-8"
           } `}
         >
