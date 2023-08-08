@@ -7,29 +7,30 @@ html {
   scroll-behavior: smooth;
 }
 @font-face {
-  font-family: interRegular;
-  src: url("../assets/fonts/inter/Inter-Regular.ttf");
+  font-family: overpass;
+  src: url("../assets/fonts/Overpass-Regular.ttf");
 }
 @font-face {
-  font-family: interBlack;
-  src: url("../assets/fonts/inter/Inter-Black.ttf");
+  font-family: overpassMedium;
+  src: url("../assets/fonts/Overpass-Medium.ttf");
 }
 @font-face {
-  font-family: interSemiBold;
-  src: url("../assets/fonts/inter/Inter-SemiBold.ttf");
+  font-family: overpassSemiBold;
+  src: url("../assets/fonts/Overpass-SemiBold.ttf");
 }
 @font-face {
-  font-family: interMedium;
-  src: url("../assets/fonts/inter/Inter-Medium.ttf");
+  font-family: overpass;
+  src: url("../assets/fonts/Overpass-Regular.ttf");
 }
+
 * {
-  font-family: interRegular;
+  font-family: overpass;
 }
-.gradient {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, transparent 30%, white 100%);
+
+// Customs
+.title-example {
+  color: red;
+}
+body {
+  background: linear-gradient(135deg, #08244f 0%, #134cb5 47.38%, #0b42ab 100%);
 }

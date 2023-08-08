@@ -1,68 +1,54 @@
-import monabelleLogo from "./svg/logo.svg";
-import blackLogo from "./svg/black-logo.svg";
-import arrowDown from "./svg/arrow-down.svg";
-import rightArrow from "./svg/right-arrow.svg";
-import heroBackground from "./images/hero-background.png";
-
-import everonBrand from "./svg/brand-2.svg";
-import exchangeBrand from "./svg/brand-3.svg";
-import monabelleBrand from "./svg/brand-1.svg";
-
-import user from "./svg/user.svg";
-import menu from "./svg/menu.svg";
-import check from "./svg/check.svg";
-import logo01 from "./svg/logo-1.svg";
-import logo02 from "./svg/logo-2.svg";
-import logo03 from "./svg/logo-3.svg";
-import logo04 from "./svg/logo-4.svg";
-import menuBlack from "./svg/menu-black.svg";
-import blackArrow from "./svg/black-arrow.svg";
-import smDownArrow from "./svg/sm-down-arrow.svg";
-import smRightArrow from "./svg/sm-right-arrow.svg";
-
-import reportIcon from "./svg/report-icon.svg";
-import paymentIcon from "./svg/payment-icon.svg";
-import managmenticon from "./svg/management-icon.svg";
-import transactionIcon from "./svg/transaction-icon.svg";
-
-import vetor from "./svg/vetor.svg";
-import appImage01 from "./images/app-image.png";
-import appImage02 from "./images/about-image.png";
-import appImage03 from "./images/image-mobile.png";
-
-import avatar01 from "./images/avatar-01.png";
-import avatar02 from "./images/avatar-02.png";
-import avatar03 from "./images/avatar-03.png";
-
+import sun from "./svg/sun.svg";
+import line1 from "./svg/line-1.svg";
+import line2 from "./svg/line-2.svg";
+import mapIcon from "./svg/map-icon.svg";
+import micIcon from "./svg/mic-icon.svg";
+import sunCloud from "./svg/sun-cloud.svg";
+import windIcon from "./svg/wind-icon.svg";
+import focusIcon from "./svg/focus-icon.svg";
+import arrowUpIcon from "./svg/arrow-up-icon.svg";
+import calendarIcon from "./svg/calendar-icon.svg";
+import humidityIcon from "./svg/humidity-icon.svg";
+import blackSunIcon from "./svg/black-sun-icon.svg";
+import blackWindIcon from "./svg/black-wind-icon.svg";
+import blackRainIcon from "./svg/black-rain-icon.svg";
+import arrowDownIcon from "./svg/arrow-down-icon.svg";
+import notificationIcon from "./svg/notification-icon.svg";
+import blackArrowDownIcon from "./svg/black-arrow-down-icon.svg";
+import sunRainIllustration from "./svg/sun-rain.svg";
+import rainIcon from "./svg/rain-icon.svg";
+import cloudSm from "./svg/cloudSm.svg";
+import sunImage from "./svg/sunImage.svg";
+import sunCloudSm from "./svg/sunCloud.svg";
+import moonCloudSm from "./svg/moonCloudSm.svg";
+import bigRain from "./svg/big-rain-icon.svg";
+import thunderIcon from "./svg/thunder-icon.svg";
+import closeIcon from "./svg/close-icon.svg";
 export {
-  heroBackground,
-  monabelleLogo,
-  rightArrow,
-  arrowDown,
-  monabelleBrand,
-  everonBrand,
-  exchangeBrand,
-  logo01,
-  logo02,
-  logo03,
-  logo04,
-  check,
-  appImage01,
-  reportIcon,
-  transactionIcon,
-  managmenticon,
-  paymentIcon,
-  blackArrow,
-  appImage02,
-  appImage03,
-  user,
-  menu,
-  vetor,
-  avatar01,
-  avatar02,
-  avatar03,
-  menuBlack,
-  blackLogo,
-  smDownArrow,
-  smRightArrow,
+  sun,
+  closeIcon,
+  thunderIcon,
+  bigRain,
+  sunRainIllustration,
+  sunCloud,
+  sunImage,
+  mapIcon,
+  rainIcon,
+  sunCloudSm,
+  notificationIcon,
+  line1,
+  line2,
+  windIcon,
+  humidityIcon,
+  blackSunIcon,
+  blackWindIcon,
+  blackRainIcon,
+  arrowDownIcon,
+  blackArrowDownIcon,
+  arrowUpIcon,
+  calendarIcon,
+  micIcon,
+  moonCloudSm,
+  cloudSm,
+  focusIcon,
 };

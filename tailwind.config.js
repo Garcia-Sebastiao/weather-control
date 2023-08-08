@@ -7,23 +7,15 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors: {
-        "primary-color": "#FF2CDF",
-        "secondary-color": "#0014FF ",
-        "primary-font": "#b0b0b0",
-      },
       fontFamily: {
-        interMedium: "interMedium",
-        interBlack: "interBlack",
-        interSemiBold: "interSemiBold",
+        overpassMedium: "overpassMedium",
+        overpassSemiBold: "overpassSemiBold",
       },
-      screens: {
-        xs: "360px",
-        sm: "640px",
-        md: "768px",
-        lg: "1024px",
-        xl: "1280px",
-        "2xl": "1536px",
+      colors: {
+        primaryColor: "#47BFDF",
+        secondaryColor: "#4A91FF",
+        cardColor: "#ffffff30",
+        textDark: "#444E72",
       },
     },
   },

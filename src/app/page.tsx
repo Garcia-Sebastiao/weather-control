@@ -1,767 +1,279 @@
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
-
-// IMAGES
+import "./style.css";
 import {
-  appImage01,
-  appImage02,
-  arrowDown,
-  avatar02,
-  avatar03,
-  blackLogo,
-  check,
-  heroBackground,
-  logo01,
-  logo02,
-  logo03,
-  logo04,
-  managmenticon,
-  menu,
-  menuBlack,
-  monabelleLogo,
-  paymentIcon,
-  reportIcon,
-  rightArrow,
-  transactionIcon,
-  vetor,
+  arrowDownIcon,
+  arrowUpIcon,
+  bigRain,
+  calendarIcon,
+  closeIcon,
+  cloudSm,
+  humidityIcon,
+  line1,
+  line2,
+  mapIcon,
+  moonCloudSm,
+  notificationIcon,
+  rainIcon,
+  sun,
+  sunCloud,
+  sunCloudSm,
+  sunRainIllustration,
+  thunderIcon,
+  windIcon,
 } from "@/assets";
+import WeatherCard from "@/components/layout/WeatherCard";
+import { useEffect, useState } from "react";
+import { GetCoordinates } from "@/hooks/GetCoordenates";
+import { GetWeatherConditions } from "@/hooks/GetWheatherConditions";
+import { City } from "@/utils/Citys";
 
-// COMPONENTS
-import Menu from "@/components/layout/Menu";
-import Drop from "@/components/common/Drop";
-import Info from "@/components/common/Info";
-import Title from "@/components/common/Title";
-import Avatar from "@/components/common/Avatar";
-import Button from "@/components/common/Button";
-import Service from "@/components/common/Service";
-import FaqDrop from "@/components/common/FaqDrop";
-import Container from "@/components/layout/Container";
-import ParallaxText from "@/components/layout/ParallaxText";
-
-import { use, useEffect, useState } from "react";
-
-import { drops, faqdrops } from "@/utils/Drops";
+type WeatherData = {
+  main:
+    | {
+        temp: number;
+        temp_min: number;
+        temp_max: number;
+        humidity: number;
+      }
+    | undefined;
+  wind: {
+    speed: number;
+  };
+  weather: {
+    main: string;
+    icon: string;
+    description: string;
+  }[];
+};
 
 export default function Home() {
-  const [showHeader, setShowHeader] = useState(false);
-  const [menuToggle, setMenuToggle] = useState(false);
-  const [dropdowns, setDropdowns] = useState([...drops]);
-  const [faqdropdowns, setFaqDropdowns] = useState([...faqdrops]);
-
-  function toggleDropdowns(index: number) {
-    const updatedDropdowns = dropdowns.map((dropdown, i) => {
-      if (i === index) {
-        return { ...dropdown, isOpen: !dropdown.isOpen };
-      } else {
-        return { ...dropdown, isOpen: false };
-      }
-    });
-    setDropdowns(updatedDropdowns);
-  }
-
-  function toggleFaqDropdowns(index: number) {
-    const updatedFaqDropdowns = faqdropdowns.map((faqdropdown, i) => {
-      if (i === index) {
-        return { ...faqdropdown, isOpen: !faqdropdown.isOpen };
-      } else {
-        return { ...faqdropdown, isOpen: false };
-      }
-    });
-    setFaqDropdowns(updatedFaqDropdowns);
-  }
-
-  function toggleMenu() {
-    setMenuToggle(!menuToggle);
-  }
+  const [openMenu, setOpenMenu] = useState(false);
+  const [country, setCountry] = useState("Luanda");
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
 
   useEffect(() => {
-    window.addEventListener("scroll", () => {
-      window.scrollY > 20 ? setShowHeader(true) : setShowHeader(false);
+    GetCoordinates(country).then((data) => {
+      GetWeatherConditions(data?.latitude, data?.longitude).then((data) => {
+        setWeatherData(data);
+      });
     });
   }, []);
 
+  async function onChangeCountry(event: any) {
+    const newCountry = event.target.value;
+    setCountry(newCountry);
+
+    const coordinates = await GetCoordinates(newCountry);
+    const weatherConditions = await GetWeatherConditions(
+      coordinates?.latitude,
+      coordinates?.longitude
+    );
+    setWeatherData(weatherConditions);
+  }
+
   return (
-    <div
-      className={`overflow-x-hidden ${
-        menuToggle ? "h-screen overflow-y-hidden" : ""
-      }`}
-    >
-      <section className="w-full pb-40 relative">
-        <Image
-          className="-z-10 absolute w-full h-full top-0 left-0"
-          src={heroBackground}
-          alt="Background Hero"
-        />
+    <main className="w-full h-screen overflow-y-auto overflow-x-hidden relative px-6 py-8">
+      <Image src={line1} alt="" className="absolute top-0 -right-10 w-48" />
+      <Image src={line2} alt="" className="absolute top-20 left-0 w-20" />
+      <header className="w-full flex items-center justify-between ">
+        <div className="flex items-center gap-2">
+          <Image className="w-6" src={mapIcon} alt="" />
+          <form className="flex items-center gap-8">
+            <select
+              className="text-xl text-white outline-none bg-transparent border-none"
+              name=""
+              onChange={onChangeCountry}
+              id=""
+            >
+              {City.map((city) => (
+                <option value={city}>{city}</option>
+              ))}
+            </select>
+          </form>
+        </div>
 
-        <header
-          className={`w-full transition duration-150 sm:px-20 flex items-center justify-between xs:px-6 ${
-            showHeader
-              ? "fixed top-0 left-0 shadow-md py-4 z-20 bg-white"
-              : "py-8"
-          } `}
-        >
-          <Link href="#">
+        <button>
+          <Image src={notificationIcon} alt="" />
+        </button>
+      </header>
+
+      <section className="w-full flex flex-col gap-8 pt-10 items-center">
+        <div className="w-full flex items-center justify-center">
+          {weatherData?.main?.temp ? (
             <Image
-              src={showHeader ? blackLogo : monabelleLogo}
-              alt="Monabelle"
-              className=""
+              width={120}
+              height={120}
+              src={`/weather-icons/${weatherData?.weather[0].icon}.svg`}
+              alt=""
             />
-          </Link>
-
-          <nav className="xs:hidden lg:block">
-            <ul className="flex items-center gap-4">
-              <li className="flex items-center gap-4 px-3 py-2 rounded-[4px] hover:bg-[#ffffff25] transition duration-150 focus:bg-[#ffffff25] backdrop-blur-sm">
-                <Link
-                  className={`text-sm font-medium ${
-                    showHeader ? "text-[#1e1e1e]" : "text-white"
-                  }`}
-                  href="#"
-                >
-                  Home
-                </Link>
-              </li>
-              <li className="flex items-center gap-4 px-3 py-2 rounded-[4px] hover:bg-[#ffffff25] transition duration-150 focus:bg-[#ffffff25] backdrop-blur-sm">
-                <Link
-                  className={`text-sm font-medium ${
-                    showHeader ? "text-[#1e1e1e]" : "text-white"
-                  }`}
-                  href="#our_services"
-                >
-                  Our Services
-                </Link>
-              </li>
-              <li className="flex items-center gap-4 px-3 py-2 rounded-[4px] hover:bg-[#ffffff25] transition duration-150 focus:bg-[#ffffff25] backdrop-blur-sm">
-                <Link
-                  className={`text-sm font-medium ${
-                    showHeader ? "text-[#1e1e1e]" : "text-white"
-                  }`}
-                  href="#how_plataform_works"
-                >
-                  How the platform works
-                </Link>
-              </li>
-              <li className="flex items-center gap-4 px-3 py-2 rounded-[4px] hover:bg-[#ffffff25] transition duration-150 focus:bg-[#ffffff25] backdrop-blur-sm">
-                <Link
-                  className={`text-sm font-medium ${
-                    showHeader ? "text-[#1e1e1e]" : "text-white"
-                  }`}
-                  href="#about_us"
-                >
-                  About Us
-                </Link>
-              </li>
-              <li className="flex items-center gap-4 px-3 py-2 rounded-[4px] hover:bg-[#ffffff25] transition duration-150 focus:bg-[#ffffff25] backdrop-blur-sm">
-                <Link
-                  className={`text-sm font-medium ${
-                    showHeader ? "text-[#1e1e1e]" : "text-white"
-                  }`}
-                  href="#contacts"
-                >
-                  Contacts
-                </Link>
-              </li>
-            </ul>
-          </nav>
-
-          <ul className="flex items-center gap-2 xs:hidden lg:flex">
-            <li
-              className={`flex items-center gap-4 px-4 py-3 rounded-[4px] hover:brightness-75 ${
-                showHeader ? "bg-secondary-color" : "bg-[#ffffff25]"
-              }`}
-            >
-              <Link href="" className={`text-sm font-medium text-white`}>
-                Sign In
-              </Link>
-            </li>
-            <li className="flex items-center gap-4 px-4 py-3 rounded-[4px] hover:brightness-75 bg-primary-color">
-              <Link href="" className="text-white text-sm font-medium">
-                Sign Up
-              </Link>
-            </li>
-          </ul>
-
-          <ul className="lg:hidden">
-            <li>
-              <button onClick={toggleMenu}>
-                <Image src={showHeader ? menuBlack : menu} alt="" />
-              </button>
-            </li>
-          </ul>
-        </header>
-
-        <Menu
-          onClick={toggleMenu}
-          className={menuToggle ? "translate-x-0" : "-translate-x-full"}
-        />
-
-        <div className="flex flex-col items-center gap-8 pt-20 justify-center sm:px-10 xs:px-6 ">
-          <motion.div
-            initial={{ scale: 0.5 }}
-            animate={{
-              scale: [0.5, 0.75, 0.5],
-              transition: { repeat: Infinity, duration: 5 },
-            }}
-            className="px-6 lg:py-2 xs:py-3 font-interMedium rounded-full bg-[#250E47]"
-          >
-            <span className="text-sm text-white">
-              I wonder if you already knew how? 🤔
-            </span>
-          </motion.div>
-          <h2 className="text-white text-5xl leading-snug text-center font-interBlack xs:text-4xl">
-            Enjoy a magical and easy way to <br />
-            <span className="text-primary-color font-interBlack">
-              exchange money
-            </span>{" "}
-            without <br />
-            leaving home and fast
-          </h2>
-
-          <p className="text-white text-sm text-center leading-relaxed">
-            t is a long established fact that a reader will be distracted by the
-            readable content of a page <br /> when looking at its layout. The
-            point of using Lorem Ipsum is that it has a more-or-less normal{" "}
-            <br /> distribution of letters, as opposed
-          </p>
-
-          <Button variant="linear-gradient">
-            Let’s start the value exchanges <Image src={rightArrow} alt="" />
-          </Button>
-
-          <div className="pt-8">
-            <Image src={arrowDown} alt="" />
-          </div>
+          ) : (
+            ""
+          )}
         </div>
 
-        <ParallaxText
-          baseVelocity={5}
-          className="bg-primary-color py-4 -rotate-[4deg]"
-        >
-          <h2 className="text-2xl font-interBlack text-white flex-none">
-            MONABELE®
-          </h2>
-          <h3 className="text-white flex-none text-xl font-interBlack">
-            Ever On
-          </h3>
-          <h2 className="text-2xl font-interBlack text-white flex-none">
-            MONABELE®
-          </h2>
-          <h3 className="text-white flex-none text-xl font-interBlack">
-            Try and trust
-          </h3>
-          <h2 className="text-2xl font-interBlack text-white flex-none">
-            Ever On®
-          </h2>
-          <h3 className="text-white flex-none text-xl font-interBlack">
-            The easy way to get money
-          </h3>
-          <h2 className="text-2xl font-interBlack text-white flex-none">
-            Value exchanges®
-          </h2>
-          <h3 className="text-white flex-none text-xl font-interBlack">
-            Try and trust
-          </h3>
-          <h2 className="text-2xl font-interBlack text-white flex-none">
-            Ever On®
-          </h2>
-          <h3 className="text-white flex-none text-xl font-interBlack">
-            The easy way to get money
-          </h3>
-          <h2 className="text-2xl font-interBlack text-white flex-none">
-            Value exchanges®
-          </h2>
-          <h3 className="text-white flex-none text-xl font-interBlack">
-            Try and trust
-          </h3>
-        </ParallaxText>
+        <div className="w-full -mt-4 flex items-center flex-col gap-4">
+          {Math.ceil((weatherData?.main?.temp || 0) - 273.15) > 0 ? (
+            <div className="flex">
+              <h2 className="text-white text-7xl font-overpassSemiBold">
+                {Math.floor((weatherData?.main?.temp || 0) - 273.15)}
+              </h2>
+              <span className="text-white font-overpassMedium text-4xl">°</span>
+            </div>
+          ) : (
+            <span className="text-white text-lg">Carregando...</span>
+          )}
 
-        <ParallaxText
-          baseVelocity={-5}
-          className="bg-secondary-color py-4 lg:rotate-[3.147deg] xs:rotate-12"
-        >
-          <h2 className="text-2xl font-interBlack text-white flex-none">
-            MONABELE®
-          </h2>
-          <h3 className="text-white flex-none text-xl font-interBlack">
-            Ever On
-          </h3>
-          <h2 className="text-2xl font-interBlack text-white flex-none">
-            MONABELE®
-          </h2>
-          <h3 className="text-white flex-none text-xl font-interBlack">
-            Try and trust
-          </h3>
-          <h2 className="text-2xl font-interBlack text-white flex-none">
-            Ever On®
-          </h2>
-          <h3 className="text-white flex-none text-xl font-interBlack">
-            The easy way to get money
-          </h3>
-          <h2 className="text-2xl font-interBlack text-white flex-none">
-            Value exchanges®
-          </h2>
-          <h3 className="text-white flex-none text-xl font-interBlack">
-            Try and trust
-          </h3>
-          <h2 className="text-2xl font-interBlack text-white flex-none">
-            Ever On®
-          </h2>
-          <h3 className="text-white flex-none text-xl font-interBlack">
-            The easy way to get money
-          </h3>
-          <h2 className="text-2xl font-interBlack text-white flex-none">
-            Value exchanges®
-          </h2>
-          <h3 className="text-white flex-none text-xl font-interBlack">
-            Try and trust
-          </h3>
-        </ParallaxText>
-      </section>
-
-      <Container className="flex flex-col items-center gap-12">
-        <span className="text-primary-font font-interMedium text-center leading-relaxed">
-          Meet some of the partners who trusted monabele's service with the
-          impact it could make.
-        </span>
-
-        <motion.div
-          animate={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="flex items-center justify-center flex-wrap gap-16"
-        >
-          <Image src={logo01} alt="" />
-          <Image src={logo02} alt="" />
-          <Image src={logo03} alt="" />
-          <Image src={logo04} alt="" />
-        </motion.div>
-      </Container>
-
-      <Container
-        id="about_us"
-        className="flex items-center justify-between relative xs:flex-wrap-reverse lg:flex-nowrap xs:gap-8 lg:gap-0"
-      >
-        <motion.div
-          initial={{ x: -300, opacity: 0.5 }}
-          whileInView={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-col items-start gap-8"
-        >
-          <Title>
-            Find out More About Us <br /> and our View on the Market
-          </Title>
-          <p className="text-primary-font leading-loose">
-            t is a long established fact that a reader will be distracted by the{" "}
-            <br /> readable content of a page when looking at its layout. The
-            point <br /> of using Lorem Ipsum is that it has a more-or-less
-            normal <br />
-            distribution of letters, as opposed
-          </p>
-
-          <ul className="flex flex-col gap-6">
-            <li className="flex items-center gap-4">
-              <Image src={check} alt="" />
-              <span className="text-primary-font">
-                by the readable content of a page when looking at its layout.
+          {weatherData?.main?.temp ? (
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-white text-lg">
+                {weatherData.weather[0].description}
               </span>
-            </li>
-            <li className="flex items-center gap-4">
-              <Image src={check} alt="" />
-              <span className="text-primary-font">
-                by the readable content of a page when looking at its layout.
+              <span className="text-white text-lg">
+                Max.: {Math.floor((weatherData?.main?.temp_max || 0) - 273.15)}°
+                Min.: {Math.floor((weatherData?.main?.temp_min || 0) - 273.15)}°
               </span>
-            </li>
-            <li className="flex items-center gap-4">
-              <Image src={check} alt="" />
-              <span className="text-primary-font">
-                by the readable content of a page when looking at its layout.
-              </span>
-            </li>
-          </ul>
+            </div>
+          ) : (
+            ""
+          )}
 
-          <Button variant="primary">
-            Know more about us <Image src={rightArrow} alt="" />
-          </Button>
-        </motion.div>
+          {weatherData?.wind.speed ? (
+            <div className="w-full flex items-center justify-between bg-[#001026] bg-opacity-40 rounded-3xl px-6 py-4">
+              <div className="flex items-center gap-1">
+                <Image src={rainIcon} alt="" />
+                <span className="text-white font-overpassSemiBold">6%</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Image src={humidityIcon} alt="" />
+                <span className="text-white font-overpassSemiBold">
+                  {weatherData?.main?.humidity || 0}%
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Image src={windIcon} alt="" />
+                <span className="text-white font-overpassSemiBold">
+                  {Math.floor((weatherData?.wind.speed || 0) * 3.6)}km/h
+                </span>
+              </div>
+            </div>
+          ) : (
+            ""
+          )}
 
-        <motion.div
-          animate={{ x: 300, opacity: 0.5 }}
-          whileInView={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="md:-mr-32 flex items-center justify-center w-[45rem] top-0 "
-        >
-          <Image
-            className="w-full h-full object-cover object-center"
-            src={appImage01}
-            alt=""
-          />
-        </motion.div>
-      </Container>
+          <div className="w-full flex flex-col items-center justify-between bg-[#001026] bg-opacity-40 rounded-3xl px-6 py-4">
+            <header className="w-full flex items-center justify-between">
+              <h3 className="text-white text-xl font-overpassSemiBold">
+                Today
+              </h3>
 
-      <Container>
-        <div className="flex w-full justify-between xs:flex-wrap gap-4">
-          <Title>
-            Get Many Advantages <br /> with our Platform
-          </Title>
+              <span className="text-white text-base">Mar, 9</span>
+            </header>
 
-          <motion.div
-            animate={{ x: 300, opacity: 0.5 }}
-            whileInView={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="flex items-start flex-col gap-4"
-          >
-            <p className="text-primary-font">
-              t is a long established fact that a reader will be distracted by
-              the <br />
-              readable content of a page when looking at its layout normal
-            </p>
-
-            <Link
-              href=""
-              className="flex items-center gap-2 py-3 px-6 rounded-[4px] bg-[#1e1e1e] text-white text-sm"
-            >
-              View more <Image src={rightArrow} alt="" />
-            </Link>
-          </motion.div>
-        </div>
-      </Container>
-
-      <Container>
-        <div className="flex items-start w-full gap-12 xs:flex-wrap xl:flex-nowrap">
-          <Info image={paymentIcon} alt="Payment" title="Payment">
-            t is a long established fact that a reader will be distracted by the
-            readable content of a page when looking at its layout normal
-          </Info>
-
-          <Info image={managmenticon} alt="Management" title="Management">
-            t is a long established fact that a reader will be distracted by the
-            readable content of a page when looking at its layout normal
-          </Info>
-
-          <Info image={transactionIcon} alt="Transactions" title="Transactions">
-            t is a long established fact that a reader will be distracted by the
-            readable content of a page when looking at its layout normal
-          </Info>
-
-          <Info image={reportIcon} alt="Reporting" title="Reporting">
-            t is a long established fact that a reader will be distracted by the
-            readable content of a page when looking at its layout normal
-          </Info>
-        </div>
-      </Container>
-
-      <Container
-        id="how_plataform_works"
-        className="lg:pt-16 xs:pt-14 py-16 mt-40 bg-[#1e1e1e] flex items-center xs:flex-wrap lg:flex-nowrap gap-20"
-      >
-        <motion.div
-          initial={{ x: -300, opacity: 0.5 }}
-          whileInView={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="lg:-ml-32 lg:flex-none flex items-center justify-center w-[35rem] top-0 xs:hidden lg:block"
-        >
-          <Image
-            className="w-full h-full object-cover object-center"
-            src={appImage02}
-            alt=""
-          />
-        </motion.div>
-        <motion.div
-          initial={{ x: 300, opacity: 0.5 }}
-          whileInView={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-col items-start gap-7"
-        >
-          <h2 className="text-white text-3xl font-interBlack leading-normal">
-            Learn how the platform works and <br /> achieve your goal of making
-            money
-          </h2>
-
-          <p className="text-sm text-primary-font">
-            t is a long established fact that a reader will be distracted by the
-            readable content <br /> of a page when looking at its layout. The
-            point of using Lorem Ipsum is that it has
-          </p>
-
-          <div className="w-full flex flex-col gap-1">
-            {dropdowns.map((dropdown, index) => (
-              <Drop
-                key={index}
-                title={dropdown.title}
-                isOpen={dropdown.isOpen}
-                onClick={() => toggleDropdowns(index)}
-              >
-                {dropdown.text}
-              </Drop>
-            ))}
-          </div>
-        </motion.div>
-      </Container>
-
-      <Container id="our_services" className="flex flex-col gap-14">
-        <Title>Our Services</Title>
-
-        <div className="w-full flex items-center gap-4 xs:flex-wrap lg:flex-nowrap">
-          <Service title="Join people who believe in monabele to exchange values">
-            t is a long established fact that a reader will be distracted <br />{" "}
-            by the readable content of a page when looking at its layout. <br />{" "}
-            The point of using Lorem Ipsum is that it has
-          </Service>
-
-          <Service title="Join people who believe in monabele to exchange values">
-            t is a long established fact that a reader will be distracted <br />{" "}
-            by the readable content of a page when looking at its layout. <br />{" "}
-            The point of using Lorem Ipsum is that it has
-          </Service>
-        </div>
-      </Container>
-
-      <Container className="relative h-screen xs:hidden lg:block">
-        <div className="gradient z-10"></div>
-
-        <Avatar className="border-primary-color top-16 right-[50%] rotate-45">
-          <Image
-            className="w-full h-full rouded-full object-cover object-center"
-            src={avatar02}
-            alt="Avatar"
-          />
-        </Avatar>
-
-        <Avatar className="right-64 top-36 rotate-45  border-secondary-color">
-          <Image
-            className="w-full h-full rouded-full object-cover object-center"
-            src={avatar03}
-            alt="Avatar"
-          />
-        </Avatar>
-
-        <Avatar className="left-64 w-12 h-12 top-64 -rotate-6 border-primary-color">
-          <Image
-            className="w-full h-full rouded-full object-cover object-center"
-            src={avatar03}
-            alt="Avatar"
-          />
-        </Avatar>
-
-        <Avatar className="w-16 h-16 left-16 top-96 -rotate-12 border-primary-color">
-          <Image
-            className="w-full h-full rouded-full object-cover object-center"
-            src={avatar03}
-            alt="Avatar"
-          />
-        </Avatar>
-
-        <Avatar className="w-9 h-9 absolute left-96 top-[28rem] -rotate-12 rounded-full border-2 border-primary-color">
-          <Image
-            className="w-full h-full rouded-full object-cover object-center"
-            src={avatar03}
-            alt="Avatar"
-          />
-        </Avatar>
-
-        <Avatar className="right-16 top-64 rotate-12 border-primary-color">
-          <Image
-            className="w-full h-full rouded-full object-cover object-center"
-            src={avatar03}
-            alt="Avatar"
-          />
-        </Avatar>
-
-        <Avatar className="right-96 top-[25rem] rotate-12 border-primary-color">
-          <Image
-            className="w-full h-full rouded-full object-cover object-center"
-            src={avatar03}
-            alt="Avatar"
-          />
-        </Avatar>
-
-        <div className="relative flex flex-col gap-4 items-center">
-          <Title className="text-center">
-            Join people who believe <br /> in monabele to exchange values
-          </Title>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="text-sm text-primary-font pb-6"
-          >
-            t is a long established fact that a reader will be distracted by the
-            readable content <br /> of a page when looking at its layout. The
-            point of using Lorem Ipsum is that it has
-          </motion.p>
-
-          <Button variant="primary">
-            Joining the monabele agents <Image src={rightArrow} alt="" />
-          </Button>
-
-          <Image
-            className="absolute -z-10 top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] w-3/5"
-            src={vetor}
-            alt="Vetor"
-          />
-        </div>
-      </Container>
-
-      <Container className="flex flex-col gap-8 pb-40">
-        <Title>FAQ’s</Title>
-
-        <div className="flex flex-col gap-1">
-          {faqdropdowns.map((faqdropdown, index) => (
-            <FaqDrop
-              key={index}
-              title={faqdropdown.title}
-              isOpen={faqdropdown.isOpen}
-              onClick={() => toggleFaqDropdowns(index)}
-            >
-              {faqdropdown.text}
-            </FaqDrop>
-          ))}
-        </div>
-      </Container>
-      <br />
-      <br />
-      <br />
-      <footer
-        id="contacts"
-        className="w-full flex flex-col bg-[#1e1e1e] lg:px-20 lg:py-28 gap-8 xs:px-6 xs:py-16"
-      >
-        <div className="flex lg:flex-nowrap justify-between items-start lg:gap-0 lg:pb-20 xs:flex-wrap xs:gap-8 xs>pb-10">
-          <div className="flex flex-col gap-8">
-            <a href="/">
-              <Image src={monabelleLogo} alt="Monabelle" className="" />
-            </a>
-
-            <p className="text-[#656666] leading-loose text-xs">
-              It is a long established fact that a reader will be <br />{" "}
-              distracted by the readable content of a page <br /> when looking
-              at its layout.
-            </p>
-
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white rounded-full"></div>
-              <div className="w-8 h-8 bg-white rounded-full"></div>
-              <div className="w-8 h-8 bg-white rounded-full"></div>
+            <div className="w-full flex pt-8 gap-2 flex-wrap">
+              <WeatherCard time="15:00" temperature={29} icon={sunCloudSm} />
+              <WeatherCard time="17:00" temperature={24} icon={cloudSm} />
+              <WeatherCard time="20:00" temperature={27} icon={moonCloudSm} />
             </div>
           </div>
 
-          <div className="flex flex-col gap-6">
-            <h3 className="text-white text-lg font-interSemiBold">Site Map</h3>
-            <ul className="flex flex-col gap-4">
-              <li>
-                <Link className="text-[#656666] text-xs" href="">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link className="text-[#656666] text-xs" href="">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link className="text-[#656666] text-xs" href="">
-                  Our Services
-                </Link>
-              </li>
-              <li>
-                <Link className="text-[#656666] text-xs" href="">
-                  How the platform works
-                </Link>
-              </li>
-              <li>
-                <Link className="text-[#656666] text-xs" href="">
-                  Contacts
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <div className="w-full flex flex-col items-center justify-between bg-[#001026] bg-opacity-40 rounded-3xl px-6 py-4">
+            <header className="w-full flex items-center justify-between">
+              <h3 className="text-white text-xl font-overpassSemiBold">
+                Next Forecast
+              </h3>
 
-          <div className="flex flex-col gap-6">
-            <h3 className="text-white text-lg font-interSemiBold">Join Us</h3>
-            <ul className="flex flex-col gap-4">
-              <li>
-                <Link className="text-[#656666] text-xs" href="">
-                  Volunteer
-                </Link>
-              </li>
-              <li>
-                <Link className="text-[#656666] text-xs" href="">
-                  Participate in mentoring
-                </Link>
-              </li>
-              <li>
-                <Link className="text-[#656666] text-xs" href="">
-                  To be partner
-                </Link>
-              </li>
-            </ul>
-          </div>
+              <Image src={calendarIcon} alt="" />
+            </header>
 
-          <div className="flex flex-col gap-6">
-            <h3 className="text-white text-lg font-interSemiBold">
-              Contact Us
-            </h3>
-            <ul className="flex flex-col gap-4">
-              <li>
-                <span className="text-[#656666] text-xs">
-                  support@monabele.co.ao
-                </span>
-              </li>
-              <li>
-                <span className="text-[#656666] text-xs">+244 924545665</span>
-              </li>
-            </ul>
-          </div>
+            <table className="table-auto mt-4 text-left w-full">
+              <tbody>
+                <tr>
+                  <td>
+                    <span className="text-white text-base font-overpassMedium">
+                      Monday
+                    </span>
+                  </td>
 
-          <div className="flex flex-col gap-6">
-            <h3 className="text-white text-lg font-interSemiBold">Terms</h3>
-            <ul className="flex flex-col gap-4">
-              <li>
-                <Link className="text-[#656666] text-xs" href="">
-                  Terms and conditions
-                </Link>
-              </li>
-              <li>
-                <Link className="text-[#656666] text-xs" href="">
-                  Policies and privacity
-                </Link>
-              </li>
-              <li>
-                <Link className="text-[#656666] text-xs" href="">
-                  Recognition
-                </Link>
-              </li>
-            </ul>
+                  <td>
+                    <Image src={bigRain} alt="" />
+                  </td>
+
+                  <td>
+                    <span className="text-sm text-white">13 °C</span>
+                  </td>
+
+                  <td>
+                    <span className="text-sm text-gray-400">10 °C</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span className="text-white text-base font-overpassMedium">
+                      Monday
+                    </span>
+                  </td>
+
+                  <td>
+                    <Image src={thunderIcon} alt="" />
+                  </td>
+
+                  <td>
+                    <span className="text-sm text-white">13 °C</span>
+                  </td>
+
+                  <td>
+                    <span className="text-sm text-gray-400">10 °C</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
+      </section>
 
-        <div className="w-full h-[1px] bg-[#f0f0f020]"></div>
+      <div className="fixed bottom-4 right-4">
+        <button
+          onClick={() => setOpenMenu(true)}
+          className="bg-white shadow-md w-16 h-16 rounded-full flex items-center justify-center"
+        >
+          <Image src={arrowUpIcon} alt="" />
+        </button>
+      </div>
 
-        <div className="flex lg:flex-row lg:gap-0 items-center w-full justify-between xs:flex-col-reverse xs:gap-4">
-          <span className="text-xs text-[#656666]">
-            © 2023 Monabele. All rights reserved
-          </span>
+      <div
+        className={`w-full transition duration-150 h-screen fixed backdrop-blur-md top-0 left-0 ${
+          openMenu ? "" : "hidden"
+        }`}
+      ></div>
 
-          <ul className="flex items-center gap-4">
-            <li>
-              <Link className="text-xs text-[#656666]" href="">
-                LinkeIn
-              </Link>
-            </li>
-            <li>
-              <Link className="text-xs text-[#656666]" href="">
-                Github
-              </Link>
-            </li>
-            <li>
-              <Link className="text-xs text-[#656666]" href="">
-                Google Drive
-              </Link>
-            </li>
-          </ul>
-        </div>
+      <footer
+        className={`w-full transition duration-150 fixed bottom-0 left-0 shadow-xl px-4 py-6 pb-12 bg-white rounded-t-3xl ${
+          openMenu ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
+        <nav className="w-full flex flex-col gap-4">
+          <header className="w-full flex items-center justify-between">
+            <h2 className="text-[#001026] text-2xl font-overpassSemiBold">
+              Pesquisar
+            </h2>
+
+            <button onClick={() => setOpenMenu(false)}>
+              <Image className="w-5" src={closeIcon} alt="" />
+            </button>
+          </header>
+
+          <form className="w-full" action="">
+            <input
+              type="search"
+              className="bg-gray-200 outline-none w-full p-4 rounded-md"
+              placeholder="Pesquisar localidade..."
+            />
+          </form>
+        </nav>
       </footer>
-    </div>
+    </main>
   );
 }
