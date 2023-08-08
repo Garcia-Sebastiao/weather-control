@@ -88,8 +88,10 @@ export default function Home() {
               onChange={onChangeCountry}
               id=""
             >
-              {City.map((city) => (
-                <option value={city}>{city}</option>
+              {City.map((city, index) => (
+                <option key={index} value={city}>
+                  {city}
+                </option>
               ))}
             </select>
           </form>
