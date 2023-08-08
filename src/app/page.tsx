@@ -60,7 +60,7 @@ export default function Home() {
         setWeatherData(data);
       });
     });
-  }, []);
+  }, [country]);
 
   async function onChangeCountry(event: any) {
     const newCountry = event.target.value;
